@@ -97,9 +97,9 @@ public class PaymentRequestParser {
 
     public static final String PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX = "paymentMethod[";
     public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP = "].group";
-    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX = "].group[";
-    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_KEY = "].key";
-    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_VALUE = "].value";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_PREFIX = "].config[";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_KEY = "].key";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_VALUE = "].value";
 
     private PaymentRequestParser() {
 
@@ -236,14 +236,18 @@ public class PaymentRequestParser {
                     Integer itemCount = 1;
                     for (ParameterItem parameterItem : paymentMethodConfig.getConfigs()) {
                         data.put(PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX + groupCount.toString()
-                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX + itemCount.toString()
-                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_KEY, parameterItem.getName());
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_PREFIX + itemCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_KEY, parameterItem.getName());
 
                         data.put(PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX + groupCount.toString()
-                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX + itemCount.toString()
-                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_VALUE, parameterItem.getValue());
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_PREFIX + itemCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_CONFIG_VALUE, parameterItem.getValue());
+
+                        itemCount++;
                     }
                 }
+
+                groupCount++;
             }
         }
 
