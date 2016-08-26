@@ -38,7 +38,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import br.com.uol.pagseguro.domain.AutomaticDebit;
+import br.com.uol.pagseguro.domain.ParameterItem;
 import br.com.uol.pagseguro.domain.PaymentMethod;
+import br.com.uol.pagseguro.domain.PaymentMethodConfig;
 import br.com.uol.pagseguro.domain.Phone;
 import br.com.uol.pagseguro.domain.Receiver;
 import br.com.uol.pagseguro.domain.paymentrequest.PaymentRequest;
@@ -65,7 +67,7 @@ public class PaymentRequestParser {
 
     /**
      * PagSeguro Log tool
-     * 
+     *
      * @see Logger
      */
     private static final Log log = new Log(PaymentRequestParser.class);
@@ -93,12 +95,18 @@ public class PaymentRequestParser {
     public static final String PAYMENT_REQUEST_SHIPPING_PACKAGE_WEIGHT = PAYMENT_REQUEST_SHIPPING_PREFIX
             + PAYMENT_REQUEST_SHIPPING_PACKAGE_PREFIX + ".weight";
 
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX = "paymentMethod[";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP = "].group";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX = "].group[";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_KEY = "].key";
+    public static final String PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_VALUE = "].value";
+
     private PaymentRequestParser() {
 
     }
 
     /**
-     * 
+     *
      * @param paymentRequest
      * @return mixed
      */
@@ -137,7 +145,7 @@ public class PaymentRequestParser {
 
         /**
          * Set payment request sender information
-         * 
+         *
          * @see PaymentRequestSender
          */
         if (paymentRequest.getSender() != null) {
@@ -157,7 +165,7 @@ public class PaymentRequestParser {
 
         /**
          * Set payment request items
-         * 
+         *
          * @see PaymentRequestItem
          */
         if (paymentRequest.getItems() != null && !paymentRequest.getItems().isEmpty()) {
@@ -185,7 +193,7 @@ public class PaymentRequestParser {
 
         /**
          * Set payment request shipping
-         * 
+         *
          * @see PaymentRequestShipping
          */
         if (paymentRequest.getShipping() != null) {
@@ -210,6 +218,33 @@ public class PaymentRequestParser {
                             .getPaymentRequestShippingPackage().getWeight());
             }
 
+        }
+
+        /**
+         * Set payment method configs
+         *
+         * @see br.com.uol.pagseguro.domain.PaymentMethodConfig
+         */
+        if (paymentRequest.getPaymentMethodConfigs() != null && !paymentRequest.getPaymentMethodConfigs().isEmpty()) {
+
+            Integer groupCount = 1;
+            for (PaymentMethodConfig paymentMethodConfig : paymentRequest.getPaymentMethodConfigs()) {
+                data.put(PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX + groupCount.toString()
+                        + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP, paymentMethodConfig.getGroup().name());
+
+                if (paymentMethodConfig.getConfigs() != null && !paymentMethodConfig.getConfigs().isEmpty()) {
+                    Integer itemCount = 1;
+                    for (ParameterItem parameterItem : paymentMethodConfig.getConfigs()) {
+                        data.put(PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX + groupCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX + itemCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_KEY, parameterItem.getName());
+
+                        data.put(PAYMENT_REQUEST_PAYMENT_METHOD_PREFIX + groupCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_PREFIX + itemCount.toString()
+                                + PAYMENT_REQUEST_PAYMENT_METHOD_GROUP_VALUE, parameterItem.getValue());
+                    }
+                }
+            }
         }
 
         return data;
@@ -617,7 +652,7 @@ public class PaymentRequestParser {
 
     /**
      * Reads the payment request code when the request is successful
-     * 
+     *
      * @param connection
      * @return payment request code
      * @throws ParserConfigurationException

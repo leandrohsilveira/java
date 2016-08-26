@@ -19,16 +19,18 @@
 package br.com.uol.pagseguro.domain.paymentrequest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uol.pagseguro.domain.Credentials;
 import br.com.uol.pagseguro.domain.Item;
+import br.com.uol.pagseguro.domain.PaymentMethodConfig;
 import br.com.uol.pagseguro.domain.Sender;
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
 import br.com.uol.pagseguro.service.paymentrequest.PaymentRequestService;
 
 /**
- * 
+ *
  * Represents a payment request transaction
  *
  */
@@ -41,7 +43,7 @@ public class PaymentRequest {
 
     /**
      * Payment request reference code
-     * 
+     *
      * Optional
      */
     private String reference;
@@ -63,7 +65,7 @@ public class PaymentRequest {
 
     /**
      * Description of this payment request/ Comment in the debtor email
-     * 
+     *
      * Optional
      */
     private String description;
@@ -75,10 +77,18 @@ public class PaymentRequest {
 
     /**
      * Due days of this payment request
-     * 
+     *
      * Optional
      */
     private Integer due;
+
+    /**
+     * Extra configs that user can add to a PagSeguro payment request
+     *
+     * Optional
+     *
+     */
+    private List<PaymentMethodConfig> paymentMethodConfigs;
 
     /**
      * Initializes a new instance of the PaymentRequest class
@@ -89,7 +99,7 @@ public class PaymentRequest {
 
     /**
      * Initializes a new instance of the PaymentRequest class with the specified arguments
-     * 
+     *
      * @param name
      * @param reference
      * @param sender
@@ -121,7 +131,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -137,7 +147,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request reference
-     * 
+     *
      * @param reference
      */
     public void setReference(String reference) {
@@ -153,7 +163,7 @@ public class PaymentRequest {
 
     /**
      * Sets the PaymentRequestSender
-     * 
+     *
      * @param sender
      */
     public void setSender(Sender sender) {
@@ -169,7 +179,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request items
-     * 
+     *
      * @param items
      */
     public void setItems(List<PaymentRequestItem> items) {
@@ -178,9 +188,9 @@ public class PaymentRequest {
 
     /**
      * Adds a new item in this payment request
-     * 
+     *
      * @see Item
-     * 
+     *
      * @param id
      * @param description
      * @param amount
@@ -192,9 +202,9 @@ public class PaymentRequest {
 
     /**
      * Adds a new item in this payment request
-     * 
+     *
      * @see Item
-     * 
+     *
      * @param item
      */
     public void addItem(PaymentRequestItem item) {
@@ -210,7 +220,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request shipping
-     * 
+     *
      * @param shipping
      */
     public void setShipping(PaymentRequestShipping shipping) {
@@ -226,7 +236,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request description
-     * 
+     *
      * @param description
      */
     public void setDescription(String description) {
@@ -242,7 +252,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request expiration days
-     * 
+     *
      * @param expiration
      */
     public void setExpiration(Integer expiration) {
@@ -258,7 +268,7 @@ public class PaymentRequest {
 
     /**
      * Sets the payment request due days
-     * 
+     *
      * @param due
      */
     public void setDue(Integer due) {
@@ -266,8 +276,26 @@ public class PaymentRequest {
     }
 
     /**
+     * Gets parameter for PagSeguro payment requests
+     *
+     * @return Parameter
+     */
+    public List<PaymentMethodConfig> getPaymentMethodConfigs() {
+        return this.paymentMethodConfigs == null ? new ArrayList<PaymentMethodConfig>() : this.paymentMethodConfigs;
+    }
+
+    /**
+     * Sets paymentMethodConfigs for PagSeguro payment requests
+     *
+     * @param paymentMethodConfigs
+     */
+    public void setPaymentMethodConfigs(List<PaymentMethodConfig> paymentMethodConfigs) {
+        this.paymentMethodConfigs = paymentMethodConfigs;
+    }
+
+    /**
      * Calls the PagSeguro web service and register this payment request
-     * 
+     *
      * @param credentials
      * @return The payment request code
      * @throws PagSeguroServiceException
@@ -278,7 +306,7 @@ public class PaymentRequest {
 
     /**
      * Calls the PagSeguro web service and return a payment request
-     * 
+     *
      * @param credentials
      * @param paymentRequestCode
      * @return The payment request
