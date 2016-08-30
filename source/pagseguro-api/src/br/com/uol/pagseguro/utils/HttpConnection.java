@@ -27,6 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
 import br.com.uol.pagseguro.helper.PagSeguroUtil;
 import br.com.uol.pagseguro.logs.Log;
@@ -181,6 +183,11 @@ public class HttpConnection {
             url = new URL(urlPS);
 
             connection = (HttpURLConnection) url.openConnection();
+            
+			if ((PagSeguroConfig.getDefaultSSLContext() != null) && (connection instanceof HttpsURLConnection)) {
+				((HttpsURLConnection) connection).setSSLSocketFactory(PagSeguroConfig.getDefaultSSLContext().getSocketFactory());
+			}
+            
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestMethod(method);

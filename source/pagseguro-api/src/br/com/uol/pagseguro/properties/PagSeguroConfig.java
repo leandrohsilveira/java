@@ -20,6 +20,8 @@ package br.com.uol.pagseguro.properties;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.net.ssl.SSLContext;
+
 import br.com.uol.pagseguro.domain.AccountCredentials;
 import br.com.uol.pagseguro.domain.ApplicationCredentials;
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
@@ -36,6 +38,8 @@ public class PagSeguroConfig {
     private String environment;
 
     private static PagSeguroConfig instance;
+    
+    private static SSLContext defaultSslContext;
 
     private PagSeguroConfig() {
     }
@@ -213,5 +217,13 @@ public class PagSeguroConfig {
     public static boolean isSandboxEnvironment() {
         return SANDBOX_ENVIRONMENT.equals(instance.environment);
     }
+    
+	public static void setDefaultSSLContext(SSLContext sslContext) {
+		defaultSslContext = sslContext;
+	}
+
+	public static SSLContext getDefaultSSLContext() {
+		return defaultSslContext;
+	}
 
 }
